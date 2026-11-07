@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GhostWriter AI — Free AI Detector & Humanizer</title>
+  
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.3); border-radius: 9999px; }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(75, 85, 99, 0.5); }
+  </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+  <!-- Header / Navigation -->
+  <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+          <i data-lucide="ghost" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">GhostWriter AI</span>
+          <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 ml-2">PRO 2.0</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+        <button id="tab-detector" onclick="switchTab('detector')" class="px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm">
+          <i data-lucide="shield-search" class="w-4 h-4"></i>
+          <span>AI Detector</span>
+        </button>
+        <button id="tab-humanizer" onclick="switchTab('humanizer')" class="px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+          <i data-lucide="wand-2" class="w-4 h-4"></i>
+          <span>AI Humanizer</span>
+        </button>
+        <button id="tab-polisher" onclick="switchTab('polisher')" class="px-4 py-2 text-sm font-medium rounded-lg transition-all flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          <span>Polisher & Tone</span>
+        </button>
+      </nav>
+
+      <!-- Right Controls -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleTheme()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-400">
+          <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+          <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+
+    <!-- AD BANNER PLACEHOLDER (Top) -->
+    <div class="w-full bg-slate-100 dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-800 rounded-xl p-3 flex items-center justify-center text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest min-h-[90px]">
+      <span>Advertisement Space (Google AdSense Banner)</span>
+    </div>
+
+    <!-- MAIN VIEW PANELS -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+
+      <!-- Left Input Panel -->
+      <section class="lg:col-span-7 flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+        
+        <!-- Input Header Toolbar -->
+        <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Input Source</span>
+            <span id="char-count" class="text-xs text-slate-400 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded-full">0 words</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="pasteText()" class="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+              <i data-lucide="clipboard" class="w-3.5 h-3.5"></i> Paste Text
+            </button>
+            <button onclick="clearText()" class="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-rose-500 transition-colors">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Text Area -->
+        <textarea id="input-text" oninput="updateWordCount()" class="w-full flex-1 p-5 bg-transparent resize-none border-0 focus:ring-0 text-slate-800 dark:text-slate-100 placeholder-slate-400 text-base leading-relaxed custom-scrollbar min-h-[350px]" placeholder="Paste your essay, article, or AI-generated text here to scan or humanize..."></textarea>
+
+        <!-- Dynamic Action Footer -->
+        <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex flex-wrap items-center justify-between gap-4">
+          
+          <!-- Mode Settings / Selector -->
+          <div id="mode-controls" class="flex items-center gap-3">
+            <label for="humanize-mode" class="text-xs font-medium text-slate-500">Bypass Intensity:</label>
+            <select id="humanize-mode" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium px-3 py-1.5 text-slate-700 dark:text-slate-200 focus:outline-none">
+              <option value="balanced">Balanced Humanize</option>
+              <option value="academic">Academic & Essay</option>
+              <option value="creative">Creative & Conversational</option>
+              <option value="aggressive">Maximum Stealth Bypass</option>
+            </select>
+          </div>
+
+          <!-- Primary Action Button -->
+          <button id="primary-btn" onclick="executeAction()" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="shield-search" class="w-4 h-4"></i>
+            <span id="btn-label">Analyze AI Probability</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Output & Analysis Panel -->
+      <section class="lg:col-span-5 flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+        
+        <!-- Output Header -->
+        <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
+          <span id="output-title" class="text-xs font-semibold uppercase tracking-wider text-slate-400">Detection & Insights</span>
+          <button onclick="copyOutput()" class="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Result
+          </button>
+        </div>
+
+        <!-- Output Content Frame -->
+        <div id="output-container" class="flex-1 p-6 flex flex-col items-center justify-center text-center custom-scrollbar overflow-y-auto">
+          
+          <!-- Default Empty State -->
+          <div id="empty-state" class="flex flex-col items-center gap-3 text-slate-400">
+            <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+              <i data-lucide="cpu" class="w-6 h-6"></i>
+            </div>
+            <p class="text-sm font-medium">Enter text on the left and click analyze or humanize to view full diagnostic scores.</p>
+          </div>
+
+          <!-- Live Results (Hidden initially) -->
+          <div id="results-state" class="w-full flex-1 flex flex-col gap-6 hidden">
+            
+            <!-- AI Score Dial / Meter -->
+            <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex flex-col items-center">
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Overall AI Content Score</span>
+              
+              <div class="relative flex items-center justify-center my-2">
+                <svg class="w-32 h-32 transform -rotate-90">
+                  <circle cx="64" cy="64" r="54" stroke="currentColor" stroke-width="10" class="text-slate-200 dark:text-slate-700" fill="transparent"/>
+                  <circle id="score-circle" cx="64" cy="64" r="54" stroke="currentColor" stroke-width="10" class="text-emerald-500 stroke-current transition-all duration-1000 ease-out" fill="transparent" stroke-dasharray="339.29" stroke-dashoffset="339.29"/>
+                </svg>
+                <div class="absolute flex flex-col items-center">
+                  <span id="score-percent" class="text-3xl font-extrabold">0%</span>
+                  <span id="score-label" class="text-[10px] font-bold uppercase tracking-widest text-emerald-500">Human</span>
+                </div>
+              </div>
+
+              <!-- Key Metrics Bar -->
+              <div class="grid grid-cols-2 gap-3 w-full mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                <div class="text-left px-3 py-2 bg-white dark:bg-slate-900 rounded-lg">
+                  <span class="text-[10px] text-slate-400 block font-semibold">PERPLEXITY</span>
+                  <span id="metric-perplexity" class="text-sm font-bold">High (Natural)</span>
+                </div>
+                <div class="text-left px-3 py-2 bg-white dark:bg-slate-900 rounded-lg">
+                  <span class="text-[10px] text-slate-400 block font-semibold">BURSTINESS</span>
+                  <span id="metric-
